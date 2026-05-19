@@ -1,0 +1,80 @@
+Deployment
+Source
+Log
+2026-05-20 02:57:18.97
+01fdcf79
+System
+forwarding local port 5000 to external port 80 (mapped as 1104)
+2026-05-20 02:57:18.97
+01fdcf79
+System
+starting up user application
+2026-05-20 02:57:18.97
+01fdcf79
+System
+metasidecar: loaded enterprise status from environment is_enterprise=false
+2026-05-20 02:57:20.18
+01fdcf79
+User
+> NODE_ENV=production tsx server/index.ts
+2026-05-20 02:57:20.18
+01fdcf79
+User
+> magic-patterns-vite-template@0.0.1 start
+2026-05-20 02:57:21.18
+01fdcf79
+User
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+2026-05-20 02:57:21.18
+01fdcf79
+User
+(Use `node --trace-warnings ...` to show where the warning was created)
+2026-05-20 02:57:21.18
+01fdcf79
+User
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+2026-05-20 02:57:21.18
+01fdcf79
+User
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+2026-05-20 02:57:21.18
+01fdcf79
+User
+To prepare for this change:
+2026-05-20 02:57:21.18
+01fdcf79
+User
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+2026-05-20 02:57:21.18
+01fdcf79
+User
+(node:43) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+2026-05-20 02:57:22.00
+01fdcf79
+User
+StrayPaw API server running on port 3001
+2026-05-20 02:58:18.97
+01fdcf79
+System
+a port configuration was specified but the required port was never opened, expected port 5000
+2026-05-20 03:03:19.23
+c999da92
+System
+starting up user application
+
+2026-05-20 03:03:19.23
+c999da92
+System
+forwarding local port 5000 to external port 80 (mapped as 1104)
+2026-05-20 03:03:19.23
+c999da92
+System
+metasidecar: loaded enterprise status from environment is_enterprise=false
+2026-05-20 03:03:20.18
+c999da92
+User
+> NODE_ENV=production SERVER_PORT=5000 tsx server/index.ts
+2026-05-20 03:03:20.18
+c999da92
+User
+> magic-patterns-vite-template@0.0.1 start
