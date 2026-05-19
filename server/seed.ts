@@ -42,8 +42,9 @@ const DEMO_REPORTS = [
 ];
 
 export async function seedIfEmpty() {
-  const { rows } = await pool.query('SELECT COUNT(*) FROM users');
-  if (parseInt(rows[0].count) > 0) return;
+  const { rows: userRows } = await pool.query('SELECT COUNT(*) FROM users');
+  const { rows: reportRows } = await pool.query('SELECT COUNT(*) FROM reports');
+  if (parseInt(userRows[0].count) > 0 && parseInt(reportRows[0].count) > 0) return;
 
   console.log('Seeding demo data...');
   for (const u of DEMO_USERS) {
