@@ -25,8 +25,8 @@ export function AdminUsers() {
   }
   const residents = users.filter((u) => u.role === 'resident');
   const admins = users.filter((u) => u.role === 'admin');
-  const handleRoleChange = (userId: string, newRole: 'resident' | 'admin') => {
-    const res = changeUserRole(userId, newRole);
+  const handleRoleChange = async (userId: string, newRole: 'resident' | 'admin') => {
+    const res = await changeUserRole(userId, newRole);
     if (res.ok) {
       toast.success(`User role updated to ${newRole}`);
       setShowRoleModal(null);
@@ -34,19 +34,18 @@ export function AdminUsers() {
       toast.error(res.error || 'Failed to update role');
     }
   };
-  const handleToggleSuspension = (userId: string) => {
-    const res = toggleUserSuspension(userId);
+  const handleToggleSuspension = async (userId: string) => {
+    const targetUser = users.find((u) => u.id === userId);
+    const res = await toggleUserSuspension(userId);
     if (res.ok) {
-      const targetUser = users.find((u) => u.id === userId);
-      const newStatus =
-      targetUser?.status === 'suspended' ? 'activated' : 'suspended';
+      const newStatus = targetUser?.status === 'suspended' ? 'activated' : 'suspended';
       toast.success(`User has been ${newStatus}`);
     } else {
       toast.error(res.error || 'Failed to update status');
     }
   };
-  const handleDeleteUser = (userId: string) => {
-    const res = deleteUser(userId);
+  const handleDeleteUser = async (userId: string) => {
+    const res = await deleteUser(userId);
     if (res.ok) {
       toast.success('User deleted successfully');
       setShowDeleteModal(null);

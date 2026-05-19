@@ -96,12 +96,12 @@ export function ReportForm() {
     return true;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
     setIsSubmitting(true);
-    setTimeout(() => {
-      const newId = addReport(
+    try {
+      const newId = await addReport(
         {
           ...formData,
           reporter_name: formData.reporter_name || user?.username || '',
@@ -112,9 +112,12 @@ export function ReportForm() {
         },
         user?.id
       );
-      setIsSubmitting(false);
       setSuccessId(newId);
-    }, 1000);
+    } catch (err: any) {
+      setErrors({ submit: err.message || 'Failed to submit report. Please try again.' });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (successId) {

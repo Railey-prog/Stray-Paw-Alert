@@ -60,21 +60,24 @@ export function AdminDashboard() {
     setEditStatus(report.status);
     setEditNotes(report.admin_notes || '');
   };
-  const handleSave = (id: string) => {
+  const handleSave = async (id: string) => {
     const report = reports.find((r) => r.id === id);
-    updateReportStatus(id, editStatus, editNotes);
-    // Trigger notification if status changed and user is known
-    if (report && report.status !== editStatus && report.reporter_user_id) {
-      addNotification({
-        user_id: report.reporter_user_id,
-        report_id: report.id,
-        type: 'status_change',
-        title: 'Report Status Updated',
-        body: `Your report for a ${report.animal_type} in ${report.barangay} is now ${editStatus}.`
-      });
+    try {
+      await updateReportStatus(id, editStatus, editNotes);
+      if (report && report.status !== editStatus && report.reporter_user_id) {
+        await addNotification({
+          user_id: report.reporter_user_id,
+          report_id: report.id,
+          type: 'status_change',
+          title: 'Report Status Updated',
+          body: `Your report for a ${report.animal_type} in ${report.barangay} is now ${editStatus}.`
+        });
+      }
+      setEditingId(null);
+      toast.success('Report updated successfully');
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to update report');
     }
-    setEditingId(null);
-    toast.success('Report updated successfully');
   };
   const toggleSelection = (id: string) => {
     const next = new Set(selectedIds);
@@ -89,36 +92,39 @@ export function AdminDashboard() {
       setSelectedIds(new Set(filteredReports.map((r) => r.id)));
     }
   };
-  const handleBulkUpdate = () => {
+  const handleBulkUpdate = async () => {
     const ids = Array.from(selectedIds);
-    bulkUpdateStatus(ids, bulkStatus, bulkNotes);
-    // Trigger notifications
-    ids.forEach((id) => {
-      const report = reports.find((r) => r.id === id);
-      if (report && report.status !== bulkStatus && report.reporter_user_id) {
-        addNotification({
-          user_id: report.reporter_user_id,
-          report_id: report.id,
-          type: 'status_change',
-          title: 'Report Status Updated',
-          body: `Your report for a ${report.animal_type} in ${report.barangay} is now ${bulkStatus}.`
-        });
+    try {
+      await bulkUpdateStatus(ids, bulkStatus, bulkNotes);
+      for (const id of ids) {
+        const report = reports.find((r) => r.id === id);
+        if (report && report.status !== bulkStatus && report.reporter_user_id) {
+          await addNotification({
+            user_id: report.reporter_user_id,
+            report_id: report.id,
+            type: 'status_change',
+            title: 'Report Status Updated',
+            body: `Your report for a ${report.animal_type} in ${report.barangay} is now ${bulkStatus}.`
+          });
+        }
       }
-    });
-    setShowBulkUpdate(false);
-    setSelectedIds(new Set());
-    setBulkNotes('');
-    toast.success(`${ids.length} reports updated`);
-  };
-  const handleBulkDelete = () => {
-    if (
-    window.confirm(
-      `Are you sure you want to delete ${selectedIds.size} reports?`
-    ))
-    {
-      bulkDelete(Array.from(selectedIds));
+      setShowBulkUpdate(false);
       setSelectedIds(new Set());
-      toast.success('Reports deleted');
+      setBulkNotes('');
+      toast.success(`${ids.length} reports updated`);
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to update reports');
+    }
+  };
+  const handleBulkDelete = async () => {
+    if (window.confirm(`Are you sure you want to delete ${selectedIds.size} reports?`)) {
+      try {
+        await bulkDelete(Array.from(selectedIds));
+        setSelectedIds(new Set());
+        toast.success('Reports deleted');
+      } catch (err: any) {
+        toast.error(err.message || 'Failed to delete reports');
+      }
     }
   };
   const handleExportCSV = () => {
@@ -476,7 +482,7 @@ export function AdminDashboard() {
                           'Are you sure you want to delete this report? This action cannot be undone.'
                         ))
                         {
-                          deleteReport(report.id);
+                          deleteReport(report.id).catch((err: any) => toast.error(err.message || 'Delete failed'));
                         }
                       }}
                       className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
