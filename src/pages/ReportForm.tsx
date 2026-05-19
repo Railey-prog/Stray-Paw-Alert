@@ -19,6 +19,7 @@ export function ReportForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successId, setSuccessId] = useState<string | null>(null);
   const [showOutOfBoundsModal, setShowOutOfBoundsModal] = useState(false);
+  const [otherAnimalType, setOtherAnimalType] = useState('');
   const [formData, setFormData] = useState({
     reporter_name: '',
     animal_type: 'dog' as AnimalType,
@@ -75,6 +76,8 @@ export function ReportForm() {
     const newErrors: Record<string, string> = {};
     if (!formData.description.trim())
       newErrors.description = 'Description is required';
+    if (formData.animal_type === 'other' && !otherAnimalType.trim())
+      newErrors.other_animal_type = 'Please specify the animal type';
     if (!photoUrl) newErrors.photo = 'A photo is required';
     if (!position) {
       newErrors.location = 'Please tap "Use My Location" to set the location';
@@ -102,6 +105,7 @@ export function ReportForm() {
         {
           ...formData,
           reporter_name: formData.reporter_name || user?.username || '',
+          other_animal_type: formData.animal_type === 'other' ? otherAnimalType.trim() : undefined,
           photo_url: photoUrl,
           latitude: position![0],
           longitude: position![1]
@@ -276,13 +280,35 @@ export function ReportForm() {
                   <label className="block text-sm font-bold text-slate-700">Animal Type</label>
                   <select
                     value={formData.animal_type}
-                    onChange={(e) => setFormData({ ...formData, animal_type: e.target.value as AnimalType })}
+                    onChange={(e) => {
+                      setFormData({ ...formData, animal_type: e.target.value as AnimalType });
+                      if (e.target.value !== 'other') setOtherAnimalType('');
+                    }}
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 focus:border-[#2D6A4F] focus:bg-white transition-all appearance-none font-medium cursor-pointer"
                     style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: `right 1rem center`, backgroundRepeat: `no-repeat`, backgroundSize: `1.5em 1.5em` }}>
                     <option value="dog">Dog</option>
                     <option value="cat">Cat</option>
                     <option value="other">Other</option>
                   </select>
+                  {formData.animal_type === 'other' && (
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        placeholder="e.g. Chicken, Snake, Horse..."
+                        value={otherAnimalType}
+                        onChange={(e) => {
+                          setOtherAnimalType(e.target.value);
+                          setErrors((prev) => ({ ...prev, other_animal_type: '' }));
+                        }}
+                        className={`w-full bg-slate-50 border rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:bg-white transition-all ${errors.other_animal_type ? 'border-red-300 focus:ring-red-500/20 focus:border-red-500' : 'border-slate-200 focus:ring-[#2D6A4F]/20 focus:border-[#2D6A4F]'}`}
+                      />
+                      {errors.other_animal_type && (
+                        <p className="text-red-500 text-sm mt-1 flex items-center gap-1 font-medium">
+                          <AlertCircle size={14} /> {errors.other_animal_type}
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <label className="block text-sm font-bold text-slate-700">Condition</label>

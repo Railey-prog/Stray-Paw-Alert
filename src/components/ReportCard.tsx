@@ -56,7 +56,9 @@ export function ReportCard({ report }: ReportCardProps) {
             {/* Bottom Image Info */}
             <div className="absolute bottom-3 left-3 right-3 flex justify-between items-end text-white">
               <h3 className="font-semibold capitalize text-lg drop-shadow-md">
-                {report.animal_type}
+                {report.animal_type === 'other' && report.other_animal_type
+                  ? report.other_animal_type
+                  : report.animal_type}
               </h3>
               <span className="text-xs font-medium bg-black/30 backdrop-blur-sm px-2 py-1 rounded-md">
                 #{report.id.slice(0, 6)}

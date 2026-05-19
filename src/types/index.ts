@@ -19,6 +19,7 @@ export interface Report {
   reporter_name?: string;
   reporter_user_id?: string;
   animal_type: AnimalType;
+  other_animal_type?: string;
   condition_tag: ConditionTag;
   description: string;
   photo_url: string;

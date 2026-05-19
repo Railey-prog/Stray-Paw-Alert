@@ -75,7 +75,9 @@ export function ReportDetail() {
             <ConditionBadge condition={report.condition_tag} />
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white capitalize mb-2 tracking-tight">
-            {report.animal_type}
+            {report.animal_type === 'other' && report.other_animal_type
+              ? report.other_animal_type
+              : report.animal_type}
           </h1>
           <p className="text-slate-300 font-mono text-sm">
             Report ID: {report.id}
