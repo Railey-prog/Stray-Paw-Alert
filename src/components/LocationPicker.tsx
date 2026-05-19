@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
 import { divIcon } from 'leaflet';
-import { MapPin } from 'lucide-react';
+import { MapPin, ChevronDown } from 'lucide-react';
 import {
   TAGO_CENTER,
   TAGO_BOUNDS,
   TAGO_MIN_ZOOM,
+  TAGO_BARANGAYS,
   MAP_TILE_URL,
   MAP_TILE_ATTRIBUTION,
   isWithinTago } from
@@ -68,7 +69,7 @@ export function LocationPicker({ position, onChange }: LocationPickerProps) {
     if (!('geolocation' in navigator)) {
       onChange(TAGO_CENTER);
       setLocationError(
-        "Geolocation isn't available in this browser. Please tap on the map to drop a pin within Tago."
+        "Geolocation isn't available in this browser. Please tap the map or pick a barangay below."
       );
       setIsLocating(false);
       return;
@@ -83,13 +84,24 @@ export function LocationPicker({ position, onChange }: LocationPickerProps) {
         onChange(TAGO_CENTER);
         setLocationError(
           err.code === 1
-            ? "Location access is blocked. Please tap on the map to drop a pin within Tago."
-            : "Couldn't get your exact location. Please tap on the map to drop a pin within Tago."
+            ? "Location access is blocked. Please tap the map or pick a barangay below."
+            : "Couldn't get your exact location. Please tap the map or pick a barangay below."
         );
         setIsLocating(false);
       },
       { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
     );
+  };
+
+  const handleBarangaySelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const name = e.target.value;
+    if (!name) return;
+    const brgy = TAGO_BARANGAYS.find((b) => b.name === name);
+    if (brgy) {
+      onChange([brgy.lat, brgy.lng]);
+      setLocationError('');
+      setClickWarning(false);
+    }
   };
 
   const handleOutOfBounds = () => {
@@ -111,6 +123,23 @@ export function LocationPicker({ position, onChange }: LocationPickerProps) {
           <MapPin size={16} />
           {isLocating ? 'Locating...' : 'Use My Location'}
         </button>
+      </div>
+
+      {/* Barangay quick-pick */}
+      <div className="relative">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <ChevronDown size={15} className="text-slate-400" />
+        </div>
+        <select
+          defaultValue=""
+          onChange={handleBarangaySelect}
+          className="w-full pl-8 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]/20 focus:border-[#2D6A4F] focus:bg-white transition-all appearance-none font-medium cursor-pointer"
+          style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: `right 0.75rem center`, backgroundRepeat: `no-repeat`, backgroundSize: `1.25em 1.25em` }}>
+          <option value="">Jump to a barangay...</option>
+          {TAGO_BARANGAYS.map((b) => (
+            <option key={b.name} value={b.name}>{b.name}</option>
+          ))}
+        </select>
       </div>
 
       <div className="h-64 w-full rounded-xl overflow-hidden border border-slate-200 shadow-sm relative z-0 bg-slate-100">
@@ -138,7 +167,7 @@ export function LocationPicker({ position, onChange }: LocationPickerProps) {
         </p>
       ) : (
         <p className="text-xs text-slate-500">
-          Tap anywhere on the map to drop a pin, or use{' '}
+          Pick a barangay above, tap the map, or use{' '}
           <span className="font-semibold text-[#2D6A4F]">Use My Location</span>{' '}
           for GPS. Only locations within Tago Municipality can be pinned.
         </p>
