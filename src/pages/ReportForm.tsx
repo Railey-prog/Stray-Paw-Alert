@@ -292,16 +292,25 @@ export function ReportForm() {
                   </select>
                   {formData.animal_type === 'other' && (
                     <div className="mt-2">
-                      <input
-                        type="text"
-                        placeholder="e.g. Chicken, Snake, Horse..."
+                      <select
                         value={otherAnimalType}
                         onChange={(e) => {
                           setOtherAnimalType(e.target.value);
                           setErrors((prev) => ({ ...prev, other_animal_type: '' }));
                         }}
-                        className={`w-full bg-slate-50 border rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:bg-white transition-all ${errors.other_animal_type ? 'border-red-300 focus:ring-red-500/20 focus:border-red-500' : 'border-slate-200 focus:ring-[#2D6A4F]/20 focus:border-[#2D6A4F]'}`}
-                      />
+                        className={`w-full bg-slate-50 border rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:bg-white transition-all appearance-none font-medium cursor-pointer ${errors.other_animal_type ? 'border-red-300 focus:ring-red-500/20 focus:border-red-500' : 'border-slate-200 focus:ring-[#2D6A4F]/20 focus:border-[#2D6A4F]'}`}
+                        style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: `right 1rem center`, backgroundRepeat: `no-repeat`, backgroundSize: `1.5em 1.5em` }}>
+                        <option value="">Select animal...</option>
+                        <option value="Chicken">Chicken</option>
+                        <option value="Duck">Duck</option>
+                        <option value="Goat">Goat</option>
+                        <option value="Pig">Pig</option>
+                        <option value="Cow">Cow</option>
+                        <option value="Horse">Horse</option>
+                        <option value="Rabbit">Rabbit</option>
+                        <option value="Bird">Bird</option>
+                        <option value="Monkey">Monkey</option>
+                      </select>
                       {errors.other_animal_type && (
                         <p className="text-red-500 text-sm mt-1 flex items-center gap-1 font-medium">
                           <AlertCircle size={14} /> {errors.other_animal_type}
