@@ -5,8 +5,15 @@ let booted = false;
 
 export default async function handler(req: any, res: any) {
   if (!booted) {
-    await seedIfEmpty().catch(console.error);
-    booted = true;
+    try {
+      await seedIfEmpty();
+      booted = true;
+      console.log('Database initialized successfully');
+    } catch (err: any) {
+      console.error('Database initialization failed:', err.message);
+      res.status(500).json({ error: 'Database initialization failed: ' + err.message });
+      return;
+    }
   }
   app(req, res);
 }
