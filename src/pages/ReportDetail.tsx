@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChevronRight,
   MapPin,
@@ -8,7 +8,9 @@ import {
   User,
   Clock,
   ShieldAlert,
-  Home } from
+  Home,
+  X,
+  ZoomIn } from
 'lucide-react';
 import { useReports } from '../context/ReportContext';
 import { StatusBadge, ConditionBadge } from '../components/Badge';
@@ -27,6 +29,7 @@ export function ReportDetail() {
   }>();
   const { reports } = useReports();
   const navigate = useNavigate();
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const report = reports.find((r) => r.id === id);
   if (!report) {
     return (
@@ -54,20 +57,52 @@ export function ReportDetail() {
   });
   return (
     <div className="pb-12">
+      {/* Lightbox */}
+      <AnimatePresence>
+        {lightboxOpen && report.photo_url && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+            onClick={() => setLightboxOpen(false)}>
+            <button
+              className="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors"
+              onClick={() => setLightboxOpen(false)}>
+              <X size={20} />
+            </button>
+            <motion.img
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              src={report.photo_url}
+              alt="Stray animal full view"
+              className="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl"
+              onClick={(e) => e.stopPropagation()} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Hero Image Section */}
       <div className="w-full h-[35vh] min-h-[240px] sm:h-[40vh] sm:min-h-[300px] relative bg-slate-900">
         {report.photo_url ?
-        <img
-          src={report.photo_url}
-          alt="Stray animal"
-          className="w-full h-full object-cover opacity-80" /> :
-
+        <div
+          className="w-full h-full cursor-zoom-in group"
+          onClick={() => setLightboxOpen(true)}>
+          <img
+            src={report.photo_url}
+            alt="Stray animal"
+            className="w-full h-full object-cover opacity-80 group-hover:opacity-95 transition-opacity" />
+          <div className="absolute top-4 right-4 bg-black/40 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+            <ZoomIn size={13} /> View full photo
+          </div>
+        </div> :
 
         <div className="w-full h-full flex items-center justify-center text-slate-500 bg-slate-800">
             No Photo Available
           </div>
         }
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent pointer-events-none"></div>
 
         <div className="absolute bottom-0 left-0 right-0 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8">
           <div className="flex flex-wrap gap-2 sm:gap-3 mb-3 sm:mb-4">
