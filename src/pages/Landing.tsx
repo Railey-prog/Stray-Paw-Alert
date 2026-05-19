@@ -78,7 +78,7 @@ export function Landing() {
               <p className="text-base sm:text-lg text-slate-600 mb-8 leading-relaxed max-w-xl">
                 StrayPaw Alert helps residents and barangay officials report,
                 map, and coordinate rescue for stray dogs, cats, and other
-                animals across all 23 official barangays of Tago.
+                animals across all 24 official barangays of Tago.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <a
@@ -310,7 +310,7 @@ export function Landing() {
           {
             icon: MapIcon,
             title: 'Tago-only coverage',
-            body: 'Reports are restricted to the 23 official barangays.'
+            body: 'Reports are restricted to the 24 official barangays.'
           }].
           map((item) =>
           <div key={item.title} className="flex items-start gap-4">

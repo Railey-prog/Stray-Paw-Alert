@@ -26,9 +26,9 @@ export const mockReports: Report[] = [
   description: 'Large brown dog chasing motorcycles near the plaza.',
   photo_url:
   'https://images.unsplash.com/photo-1534361960057-19889db9621e?auto=format&fit=crop&q=80&w=800',
-  latitude: 9.0373,
-  longitude: 126.1973,
-  barangay: 'Tago Poblacion',
+  latitude: 9.0336,
+  longitude: 126.2094,
+  barangay: 'Victoria',
   status: 'open',
   created_at: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
   updated_at: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString()
@@ -41,9 +41,9 @@ export const mockReports: Report[] = [
   description: 'Small kitten with a hurt leg hiding under a parked jeepney.',
   photo_url:
   'https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?auto=format&fit=crop&q=80&w=800',
-  latitude: 9.041,
-  longitude: 126.201,
-  barangay: 'Cagdianao',
+  latitude: 9.0103,
+  longitude: 126.1952,
+  barangay: 'Camagong',
   status: 'in-progress',
   admin_notes: 'Animal control dispatched to location.',
   created_at: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
@@ -57,9 +57,9 @@ export const mockReports: Report[] = [
   description: 'White dog with no collar wandering around the market.',
   photo_url:
   'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=800',
-  latitude: 9.025,
-  longitude: 126.185,
-  barangay: 'Mainit',
+  latitude: 9.0072,
+  longitude: 126.1681,
+  barangay: 'Gamut',
   status: 'resolved',
   admin_notes: 'Owner found and contacted.',
   created_at: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
@@ -73,9 +73,9 @@ export const mockReports: Report[] = [
   description: 'Goat stuck in a deep drainage ditch.',
   photo_url:
   'https://images.unsplash.com/photo-1524024973431-2ad916746881?auto=format&fit=crop&q=80&w=800',
-  latitude: 9.052,
-  longitude: 126.191,
-  barangay: 'Sumo',
+  latitude: 8.9771,
+  longitude: 126.2384,
+  barangay: 'Sumo-sumo',
   status: 'open',
   created_at: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
   updated_at: new Date(Date.now() - 1000 * 60 * 30).toISOString()
@@ -88,9 +88,9 @@ export const mockReports: Report[] = [
   description: 'Skinny dog looking for food, seems to have a skin condition.',
   photo_url:
   'https://images.unsplash.com/photo-1537151608804-ea6f11840865?auto=format&fit=crop&q=80&w=800',
-  latitude: 9.015,
-  longitude: 126.21,
-  barangay: 'Anahao',
+  latitude: 8.9630,
+  longitude: 126.1608,
+  barangay: 'Anahao Bag-o',
   status: 'open',
   created_at: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
   updated_at: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString()
