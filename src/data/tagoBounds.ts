@@ -46,11 +46,50 @@ export const TAGO_BARANGAYS: {name: string;lat: number;lng: number;}[] = [
 { name: 'Victoria', lat: 9.0336, lng: 126.2094 }];
 
 
+// Approximate polygon tracing the Tago municipality boundary (clockwise).
+// This replaces the simple bounding-box check so that neighbouring-municipality
+// barangays (e.g. Cantilan's Maitom, Maticdom, San Isidro, San Jose to the
+// north) are correctly excluded even though they fall inside the rectangular
+// bounding box.
+const TAGO_POLYGON: [number, number][] = [
+  [9.020, 126.047], // NW — west of Cabangahan
+  [9.038, 126.075], // N-NW
+  [9.038, 126.145], // N (flat edge — Tago / Cantilan boundary)
+  [9.038, 126.215], // N (just above Victoria at 9.0336)
+  [9.028, 126.250], // NE — between Victoria and Purisima
+  [9.018, 126.270], // NE coast near Purisima
+  [9.000, 126.280], // E coast
+  [8.980, 126.275], // E coast
+  [8.958, 126.265], // SE coast
+  [8.933, 126.248], // SE near Jubang / Sumo-sumo
+  [8.910, 126.218], // S-SE
+  [8.890, 126.190], // S — Tago / Madrid boundary area
+  [8.876, 126.158], // S
+  [8.874, 126.118], // SW
+  [8.869, 126.098], // SW — Layog area (southernmost barangay 8.8801)
+  [8.874, 126.067], // W-SW — Caras-an area
+  [8.900, 126.041], // W
+  [8.950, 126.039], // W
+  [9.000, 126.042], // W
+];
+
+// Ray-casting point-in-polygon — accurate for the small scale of a municipality
+function pointInPolygon(lat: number, lng: number, poly: [number, number][]): boolean {
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const [lati, lngi] = poly[i];
+    const [latj, lngj] = poly[j];
+    if ((lati > lat) !== (latj > lat) &&
+        lng < ((lngj - lngi) * (lat - lati)) / (latj - lati) + lngi) {
+      inside = !inside;
+    }
+  }
+  return inside;
+}
+
 // Check if a coordinate is within Tago Municipality bounds
 export function isWithinTago(lat: number, lng: number): boolean {
-  const sw = { lat: 8.85, lng: 126.05 };
-  const ne = { lat: 9.05, lng: 126.27 };
-  return lat >= sw.lat && lat <= ne.lat && lng >= sw.lng && lng <= ne.lng;
+  return pointInPolygon(lat, lng, TAGO_POLYGON);
 }
 
 // Find the closest barangay to a given coordinate (Euclidean — fine for a small area)
