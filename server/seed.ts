@@ -41,7 +41,54 @@ const DEMO_REPORTS = [
   },
 ];
 
+export async function initSchema() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS users (
+      id TEXT PRIMARY KEY,
+      username TEXT UNIQUE NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'resident',
+      status TEXT NOT NULL DEFAULT 'active',
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS reports (
+      id TEXT PRIMARY KEY,
+      reporter_name TEXT,
+      reporter_user_id TEXT REFERENCES users(id),
+      animal_type TEXT NOT NULL,
+      other_animal_type TEXT,
+      condition_tag TEXT NOT NULL,
+      description TEXT NOT NULL,
+      photo_url TEXT NOT NULL,
+      latitude DOUBLE PRECISION NOT NULL,
+      longitude DOUBLE PRECISION NOT NULL,
+      barangay TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'open',
+      admin_notes TEXT,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS notifications (
+      id TEXT PRIMARY KEY,
+      user_id TEXT REFERENCES users(id),
+      report_id TEXT,
+      type TEXT NOT NULL DEFAULT 'info',
+      title TEXT,
+      body TEXT,
+      message TEXT,
+      read BOOLEAN DEFAULT FALSE,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+  `);
+}
+
 export async function seedIfEmpty() {
+  await initSchema();
+
   const { rows: userRows } = await pool.query('SELECT COUNT(*) FROM users');
   const { rows: reportRows } = await pool.query('SELECT COUNT(*) FROM reports');
   if (parseInt(userRows[0].count) > 0 && parseInt(reportRows[0].count) > 0) return;
