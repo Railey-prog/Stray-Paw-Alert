@@ -1,7 +1,7 @@
 {
   "version": 2,
   "installCommand": "npm install",
-  "buildCommand": "npx vite build",
+  "buildCommand": "npx vite build && npx esbuild api/_handler.ts --bundle --platform=node --target=node18 --outfile=api/index.js --format=cjs --external:pg-native",
   "outputDirectory": "dist",
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api/index" },
