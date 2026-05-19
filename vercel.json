@@ -4,7 +4,9 @@
   "outputDirectory": "dist",
   "functions": {
     "api/index.ts": {
-      "includeFiles": "server/**"
+      "includeFiles": "server/**",
+      "memory": 512,
+      "maxDuration": 30
     }
   },
   "rewrites": [
