@@ -58,4 +58,4 @@ externalPort = 80
 deploymentTarget = "autoscale"
 build = ["npm", "run", "build"]
 publicDir = "dist"
-run = ["npm", "run", "server"]
+run = ["npm", "run", "start"]

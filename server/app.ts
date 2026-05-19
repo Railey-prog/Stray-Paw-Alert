@@ -21,10 +21,12 @@ app.use('/api/notifications', notificationsRouter);
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
-const distPath = path.join(__dirname, '../dist');
-app.use(express.static(distPath));
-app.get('*', (_req, res) => {
-  res.sendFile(path.join(distPath, 'index.html'));
-});
+if (process.env.NODE_ENV === 'production') {
+  const distPath = path.join(__dirname, '../dist');
+  app.use(express.static(distPath));
+  app.get('/{*splat}', (_req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+}
 
 export default app;

@@ -9,7 +9,8 @@
     "build:api": "esbuild api/_handler.ts --bundle --platform=node --target=node18 --outfile=api/index.js --format=cjs --external:pg-native",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "preview": "vite preview",
-    "server": "tsx watch server/index.ts"
+    "server": "tsx watch server/index.ts",
+    "start": "NODE_ENV=production tsx server/index.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
