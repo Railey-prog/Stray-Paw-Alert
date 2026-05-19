@@ -5,7 +5,7 @@ import app from './app';
 import { seedIfEmpty } from './seed';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PORT = process.env.SERVER_PORT || 3001;
+const PORT = process.env.PORT || process.env.SERVER_PORT || 3001;
 
 if (process.env.NODE_ENV === 'production') {
   const distPath = path.join(__dirname, '../dist');
