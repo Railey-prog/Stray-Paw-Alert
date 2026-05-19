@@ -10,7 +10,8 @@ import {
   Activity,
   CheckCircle2,
   Clock,
-  ShieldAlert } from
+  ShieldAlert,
+  MapPin } from
 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useReports } from '../context/ReportContext';
@@ -24,7 +25,8 @@ export function Dashboard() {
     total: reports.length,
     open: reports.filter((r) => r.status === 'open').length,
     inProgress: reports.filter((r) => r.status === 'in-progress').length,
-    resolved: reports.filter((r) => r.status === 'resolved').length
+    resolved: reports.filter((r) => r.status === 'resolved').length,
+    barangays: new Set(reports.map((r) => r.barangay)).size,
   };
   const myReports = user ?
   reports.filter(
@@ -93,7 +95,7 @@ export function Dashboard() {
         variants={containerVariants}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 mb-10">
+        className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-5 mb-10">
         
         {[
         {
@@ -123,6 +125,13 @@ export function Dashboard() {
           icon: CheckCircle2,
           tint: 'text-emerald-600 bg-emerald-50',
           accent: 'border-l-emerald-400'
+        },
+        {
+          label: 'Barangays Active',
+          value: stats.barangays,
+          icon: MapPin,
+          tint: 'text-purple-600 bg-purple-50',
+          accent: 'border-l-purple-400'
         }].
         map((s) =>
         <motion.div

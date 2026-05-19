@@ -18,8 +18,8 @@ import {
 
 interface LiveStats {
   total: number;
+  open: number;
   resolved: number;
-  inProgress: number;
   barangays: number;
 }
 
@@ -32,8 +32,8 @@ function useLiveStats() {
         const barangays = new Set(reports.map((r) => r.barangay)).size;
         setStats({
           total: reports.length,
+          open: reports.filter((r) => r.status === 'open').length,
           resolved: reports.filter((r) => r.status === 'resolved').length,
-          inProgress: reports.filter((r) => r.status === 'in-progress').length,
           barangays,
         });
       })
@@ -219,16 +219,16 @@ export function Landing() {
                   tint: 'bg-orange-50 text-[#E76F51]',
                 },
                 {
+                  icon: AlertTriangle,
+                  value: stats.open,
+                  label: 'Need Attention',
+                  tint: 'bg-amber-50 text-amber-600',
+                },
+                {
                   icon: CheckCircle2,
                   value: stats.resolved,
                   label: 'Cases Resolved',
                   tint: 'bg-green-50 text-[#2D6A4F]',
-                },
-                {
-                  icon: Clock,
-                  value: stats.inProgress,
-                  label: 'In Progress',
-                  tint: 'bg-blue-50 text-blue-600',
                 },
                 {
                   icon: MapPin,
