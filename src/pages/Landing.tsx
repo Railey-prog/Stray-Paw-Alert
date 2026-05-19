@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -10,9 +10,40 @@ import {
   ArrowRight,
   Users,
   Bell,
-  Lock } from
+  Lock,
+  CheckCircle2,
+  Clock,
+  MapPin } from
 'lucide-react';
+
+interface LiveStats {
+  total: number;
+  resolved: number;
+  inProgress: number;
+  barangays: number;
+}
+
+function useLiveStats() {
+  const [stats, setStats] = useState<LiveStats | null>(null);
+  useEffect(() => {
+    fetch('/api/reports')
+      .then((r) => r.json())
+      .then((reports: any[]) => {
+        const barangays = new Set(reports.map((r) => r.barangay)).size;
+        setStats({
+          total: reports.length,
+          resolved: reports.filter((r) => r.status === 'resolved').length,
+          inProgress: reports.filter((r) => r.status === 'in-progress').length,
+          barangays,
+        });
+      })
+      .catch(() => {});
+  }, []);
+  return stats;
+}
+
 export function Landing() {
+  const stats = useLiveStats();
   return (
     <div className="min-h-screen bg-[#F8FAFB] flex flex-col">
       {/* Top brand bar */}
@@ -171,6 +202,58 @@ export function Landing() {
           </div>
         </div>
       </section>
+
+      {/* Live stats bar */}
+      {stats && (
+        <section className="bg-white border-y border-slate-100 py-8 sm:py-10">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">
+              Live community stats — updated in real time
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
+              {[
+                {
+                  icon: PawPrint,
+                  value: stats.total,
+                  label: 'Total Reports',
+                  tint: 'bg-orange-50 text-[#E76F51]',
+                },
+                {
+                  icon: CheckCircle2,
+                  value: stats.resolved,
+                  label: 'Cases Resolved',
+                  tint: 'bg-green-50 text-[#2D6A4F]',
+                },
+                {
+                  icon: Clock,
+                  value: stats.inProgress,
+                  label: 'In Progress',
+                  tint: 'bg-blue-50 text-blue-600',
+                },
+                {
+                  icon: MapPin,
+                  value: stats.barangays,
+                  label: 'Barangays Active',
+                  tint: 'bg-purple-50 text-purple-600',
+                },
+              ].map((s) => (
+                <motion.div
+                  key={s.label}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="flex flex-col items-center gap-2 p-4 rounded-2xl border border-slate-100 bg-slate-50/60">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${s.tint}`}>
+                    <s.icon size={18} />
+                  </div>
+                  <p className="text-3xl font-extrabold text-slate-900">{s.value}</p>
+                  <p className="text-xs font-semibold text-slate-500 text-center leading-tight">{s.label}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* What it does */}
       <section
